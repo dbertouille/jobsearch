@@ -1,0 +1,11 @@
+{
+  "require_location_keywords": [
+    "canada",
+    "north america"
+  ],
+  "experience_summary": "Senior software engineer with experience in: ...",
+"seed_companies": [
+    "company-slug-1",
+    "company-slug-2"
+  ]
+}
