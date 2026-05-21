@@ -69,6 +69,18 @@ Show me relevant job postings
 > Show me the 10 job postings most relevant to me
 ```
 
+Show companies with job postings
+
+```
+> Show me companies with job postings
+```
+
+Show job postings for a specific company
+
+```
+> Show me jobs at Business Inc.
+```
+
 Tailor your resume to a job found by job discovery
 ```
 > Tailor my resume to job 1

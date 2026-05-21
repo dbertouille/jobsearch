@@ -47,6 +47,7 @@ class State(typing.TypedDict):
     companies: dict[str, StateCompany]
     jobs: list[Job]
     dismissed: list[str]
+    applied: list[str]
     last_discover_time: str | None
 
 
@@ -212,6 +213,7 @@ def load_state() -> State:
         "companies": {},
         "jobs": [],
         "dismissed": [],
+        "applied": [],
         "last_discover_time": None,
     }
 
