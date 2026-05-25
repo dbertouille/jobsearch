@@ -1,15 +1,15 @@
 {
   "packages": {
     "claude-code": "latest",
-    "git": "latest",
     "pandoc": "latest",
     "pass": "latest",
-    "python": "3.11"
+    "python": "3.11",
+    "uv": "latest"
   },
   "shell": {
     "init_hook": [
-      ". $VENV_DIR/bin/activate",
-      "pip install -r requirements.txt"
+      "uv sync",
+      ". $VENV_DIR/bin/activate"
     ]
   }
 }
