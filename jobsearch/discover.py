@@ -130,6 +130,41 @@ def fetch_greenhouse(company: str) -> tuple[bool, list[Job]]:
     return True, jobs
 
 
+def fetch_ashby(company: str) -> tuple[bool, list[Job]]:
+    url = f"https://api.ashbyhq.com/posting-api/job-board/{company}"
+
+    r = requests.get(url, timeout=20)
+    try:
+        r.raise_for_status()
+    except requests.HTTPError as e:
+        if e.response.status_code == 404:
+            logging.warning(f"Ashby: Company '{company}' not found")
+            return False, []
+        raise
+    data = r.json()
+
+    jobs: list[Job] = []
+
+    for j in data.get("jobs", []):
+        description = strip_html(j.get("descriptionHtml", "") or "")
+        location = j.get("location", "")
+        if not location and j.get("isRemote"):
+            location = "Remote"
+
+        jobs.append({
+            "id": j.get("id", ""),
+            "company": company,
+            "title": j.get("title", ""),
+            "location": location,
+            "description": description,
+            "salary_range": extract_salary(description),
+            "url": j.get("jobUrl", ""),
+            "source": "ashby",
+        })
+
+    return True, jobs
+
+
 def fetch_lever(company: str) -> tuple[bool, list[Job]]:
     url = f"https://api.lever.co/v0/postings/{company}?mode=json"
 
@@ -197,6 +232,10 @@ SOURCES: dict[str, Source] = {
     "lever": {
         "name": "lever",
         "fetch_jobs": fetch_lever,
+    },
+    "ashby": {
+        "name": "ashby",
+        "fetch_jobs": fetch_ashby,
     },
 }
 
