@@ -14,9 +14,11 @@ The job JSON returned by `get` has fields: `id`, `company`, `title`, `location`,
 
 ### 2. Get the resume
 
-Use the `google-drive-manager` skill to search for the resume in Google Drive. Search for files named "resume" and present any matches to the user so they can confirm which one to use. Download the confirmed file as plain text.
+Use the `google-drive-manager` skill to search for the resume in Google Drive. Search for files named "resume" and present any matches to the user so they can confirm which one to use. Download the confirmed file twice:
+- As **plain text** (for reading and tailoring)
+- As **DOCX** to `tmp/resume_original.docx` (to use as a pandoc reference doc for formatting)
 
-If the skill finds nothing or the user prefers not to use Drive, ask them to paste their resume text directly into the chat.
+If the skill finds nothing or the user prefers not to use Drive, ask them to paste their resume text directly into the chat (no DOCX reference will be available in that case).
 
 ### 3. Tailor the resume
 
@@ -39,8 +41,11 @@ Print the complete tailored resume.
 Then ask: **"Save this as a .docx file on Google Drive? (y/n)"**
 
 If yes:
-1. Write the tailored resume to a local temp file (e.g. `resume_tailored.txt`).
-2. Run `pandoc -o resume_tailored.docx resume_tailored.txt` to convert it to DOCX.
-3. Use the `google-drive-manager` skill to upload `resume_tailored.docx` with the name `"[Company] — [Job Title] Resume"`.
-4. Delete both local temp files.
-5. Print the resulting Google Drive link.
+1. Ensure the `tmp/` directory exists at the project root (create it if needed).
+2. Write the tailored resume to `tmp/resume_tailored.md` (use Markdown formatting: `**bold**` for names/titles, `#`/`##` for section headings, `-` for bullets).
+3. Convert to DOCX using the original as a reference doc to preserve formatting:
+   - If `tmp/resume_original.docx` exists: `pandoc -o tmp/resume_tailored.docx --reference-doc=tmp/resume_original.docx tmp/resume_tailored.md`
+   - Otherwise: `pandoc -o tmp/resume_tailored.docx tmp/resume_tailored.md`
+4. Use the `google-drive-manager` skill to upload `tmp/resume_tailored.docx` with the name `"[Company] — [Job Title] Resume"`.
+5. Delete all local temp files from `tmp/` (`resume_tailored.md`, `resume_tailored.docx`, `resume_original.docx`).
+6. Print the resulting Google Drive link.
